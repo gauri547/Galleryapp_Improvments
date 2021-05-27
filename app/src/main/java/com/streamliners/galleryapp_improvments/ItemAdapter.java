@@ -1,108 +1,188 @@
 package com.streamliners.galleryapp_improvments;
 
 import android.content.Context;
+import android.view.ContextMenu;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.streamliners.galleryapp_improvments.databinding.ItemCardBinding;
 import com.streamliners.galleryapp_improvments.models.Item;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
+
     private Context context;
-    String finalUrl = " ";
-    List<Item> itemList, requiredNewItemList;
+    private List<Item> items;
+    private List<Item> itemsToShow;
+    public ItemTouchHelper mItemTouchHelper;
+    public String imageUrl;
+    public int index;
+    public ItemCardBinding itemCardBinding;
 
     /**
-     * To avoid reference issues during filtering
+     * Parameterised Constructor for ItemAdapter
      * @param context
+     * @param items
      */
-    public ItemAdapter(Context context){
-        this.context=context;
-        itemList = new ArrayList<>();
-        requiredNewItemList = new ArrayList<>();
-    }
-    /**
-     * To fetch new image
-     */
-    public ItemAdapter(Context context, List<Item> itemList){
-        this.context=context;
-        this.itemList = itemList;
-        requiredNewItemList = itemList;
+    public ItemAdapter(Context context, List<Item> items){
+        this.context = context;
+        this.items = items;
+        itemsToShow = items;
     }
 
     @NonNull
     @Override
-    public ItemAdapter.ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemCardBinding b = ItemCardBinding.inflate(LayoutInflater.from(context),parent, false);
-        return new ItemViewHolder(b);
+    public ItemHolder onCreateViewHolder(@NotNull @NonNull ViewGroup parent, int viewType) {
+        ItemCardBinding binding = ItemCardBinding.inflate(LayoutInflater.from(context), parent, false);
+        return new ItemHolder(binding);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemAdapter.ItemViewHolder holder, int position, @NonNull List<Object> payloads) {
-
-        Item item=requiredNewItemList.get(position);
-        finalUrl=checkUrl(item);
-        Glide.with(context).load(finalUrl).into(holder.b.imageView);
-        holder.b.title.setText(item.label);
-        holder.b.title.setBackgroundColor(item.color);
-    }
-    private String checkUrl(Item item){
-        if(item.imageRedirectedUrl !=null){
-            return item.imageRedirectedUrl;
-        }
-        return item.uri;
+    public void onBindViewHolder(@NonNull ItemHolder holder, int position) {
+        //Inflate Card
+        holder.binding.title.setText(itemsToShow.get(position).label);
+        holder.binding.title.setBackgroundColor(itemsToShow.get(position).color);
+        Glide.with(context)
+                .asBitmap()
+                .load(itemsToShow.get(position).imageUrl)
+                .into(holder.binding.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return requiredNewItemList.size();
+        return itemsToShow.size();
     }
 
     /**
-     * To filter the particular card
+     * Search Option
      * @param query
      */
-    public void filter(String query, List<Item> itemList){
-
-        if (query.trim().isEmpty()){
-            requiredNewItemList = itemList;
+    public void filter(String query){
+        //Filter According to Search Query
+        if (query.trim().isEmpty()) {
+            itemsToShow = items;
+            notifyDataSetChanged();
             return;
         }
-        query = query.trim().toLowerCase();
-        requiredNewItemList.clear();
-        for(Item item : itemList){
-            if(item.label.toLowerCase().contains(query)){
-                requiredNewItemList.add(item);
+        query = query.toLowerCase();
+        // Temporary list of items filtered according to search
+        List<Item> tempItems = new ArrayList<>();
+        for (Item item : items){
+            if (item.label.toLowerCase().contains(query)){
+                tempItems.add(item);
             }
         }
+        itemsToShow = tempItems;
         notifyDataSetChanged();
     }
-    public void onItemMove(int fromPosition, int toPosition){
-        if(fromPosition<toPosition){
-            for(int i= fromPosition; i<toPosition;i++){
-                Collections.swap(requiredNewItemList,i,i+1);
+
+    /**
+     * Sort Items Alphabetically
+     */
+    public void sortAlphabetically(){
+        //Sort List of Items according to alphabetical order of labels
+        Collections.sort(items, new Comparator<Item>() {
+            @Override
+            public int compare(Item o1, Item o2) {
+                return o1.label.compareTo(o2.label);
             }
-        }
-        else{
-            for (int i = fromPosition; i>toPosition;i--){
-                Collections.swap(requiredNewItemList,i,i-1);
-            }
-        }
-        notifyItemMoved(fromPosition, toPosition);
+        });
+        itemsToShow = items;
+        notifyDataSetChanged();
     }
-    static class ItemViewHolder extends RecyclerView.ViewHolder{
-        ItemCardBinding b;
-        public ItemViewHolder(ItemCardBinding b){
-            super(b.getRoot());
-            this.b=b;
+
+
+    public void setItemAdapterHelper(ItemTouchHelper itemTouchHelper){
+
+        mItemTouchHelper = itemTouchHelper;
+    }
+
+    public void onItemDrag(int adapterPosition, int adapterPosition1) {
+    }
+
+    public void onItemSwipe(int adapterPosition) {
+    }
+
+    public class ItemHolder extends RecyclerView.ViewHolder implements View.OnTouchListener, GestureDetector.OnGestureListener, View.OnCreateContextMenuListener {
+        public ItemCardBinding binding;
+        GestureDetector gestureDetector;
+
+        public ItemHolder(@NonNull ItemCardBinding binding){
+            super(binding.getRoot());
+            this.binding = binding;
+            gestureDetector = new GestureDetector(binding.getRoot().getContext(), this);
+            //Set on touch listener for drag movement
+            binding.imageView.setOnTouchListener(this);
+            //Create Context Menu
+            binding.title.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            mItemTouchHelper.startDrag(this);
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            gestureDetector.onTouchEvent(event);
+            return true;
+        }
+
+        /**
+         * Create Context Menu with Edit and share option
+         * @param menu
+         * @param v
+         * @param menuInfo
+         */
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Select The Action");
+            menu.add(this.getAdapterPosition(), R.id.editMenuItem, 0, "Edit Item");
+            menu.add(this.getAdapterPosition(), R.id.shareImage, 0, "Share Image");
+            imageUrl = items.get(this.getAdapterPosition()).imageUrl;
+            index = this.getAdapterPosition();
+            itemCardBinding = binding;
         }
     }
+
+
 }
