@@ -16,7 +16,7 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item android:id="@+id/addFromGallery"
-        android:icon="@drawable/ic_upload"
+        android:icon="@drawable/ic_baseline_arrow_upward_24"
         android:title="@string/add_image"
         app:showAsAction="always"/>
 
