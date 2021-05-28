@@ -8,7 +8,7 @@ I made this app to implement new features into gallery app like:
 
 ## APK
 
-We can download apk from [here]()
+We can download apk from [here](https://github.com/gauri547/Galleryapp_Improvments/releases/download/v1/app-debug.apk)
 
 ## Previews
 
@@ -23,6 +23,11 @@ We can download apk from [here]()
 ![image](https://user-images.githubusercontent.com/81371138/118627311-3aff3980-b7e9-11eb-9f82-dc50e5f9bc6f.png)
 
 ![image](https://user-images.githubusercontent.com/81371138/118627563-77329a00-b7e9-11eb-9ac7-fbaca9262db3.png)
+
+![image](https://user-images.githubusercontent.com/81371138/119925504-39750480-bf93-11eb-8614-62ced9ef9fb4.png)
+
+![image](https://user-images.githubusercontent.com/81371138/119925521-4134a900-bf93-11eb-95fc-6a4a49c0cc36.png)
+
 
 
 
