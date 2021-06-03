@@ -11,6 +11,7 @@ I made this app to implement new features into gallery app like:
 
 We can download apk from [here](https://github.com/gauri547/Galleryapp_Improvments/releases/download/v1/app-debug.apk)
 
+
 ## Previews
 
 
