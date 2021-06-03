@@ -26,8 +26,6 @@ import com.google.mlkit.vision.label.ImageLabel;
 import com.google.mlkit.vision.label.ImageLabeler;
 import com.google.mlkit.vision.label.ImageLabeling;
 import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
-import com.streamliners.galleryapp_improvments.databinding.ChipColorBinding;
-import com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding;
 import com.streamliners.galleryapp_improvments.databinding.DialogEditImageBinding;
 import com.streamliners.galleryapp_improvments.models.Item;
 
@@ -169,7 +167,7 @@ public class EditImageDialog {
     private void inflateColorChips(Set<Integer> colors){
         //Inflate color chips to edit dialog
         for (int color: colors){
-            ChipColorBinding binding = ChipColorBinding.inflate(inflater);
+            com.streamliners.galleryapp_improvments.databinding.ChipColorBinding binding = com.streamliners.galleryapp_improvments.databinding.ChipColorBinding.inflate(inflater);
             binding.getRoot().setChipBackgroundColor(ColorStateList.valueOf(color));
             b.edColorChips.addView(binding.getRoot());
         }
@@ -185,7 +183,7 @@ public class EditImageDialog {
 
         //Inflate label chips to edit dialog
         for (String label: labels){
-            ChipLabelBinding binding = ChipLabelBinding.inflate(inflater);
+            com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding binding = com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding.inflate(inflater);
             binding.getRoot().setText(label);
             b.edLabelChips.addView(binding.getRoot());
         }
@@ -199,13 +197,13 @@ public class EditImageDialog {
                 .load(url)
                 .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(@NonNull @org.jetbrains.annotations.NotNull Bitmap resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Bitmap> transition) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         bitmap = resource;
                         extractPaletteFromBitmap();
                     }
 
                     @Override
-                    public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
+                    public void onLoadCleared(@androidx.annotation.Nullable Drawable placeholder) {
 
                     }
                 });
@@ -215,7 +213,7 @@ public class EditImageDialog {
      * Takes Custom Label Input
      */
     private void handleCustomLabelInput(){
-        ChipLabelBinding binding = ChipLabelBinding.inflate(inflater);
+        com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding binding = com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding.inflate(inflater);
         binding.getRoot().setText("Custom");
         b.edLabelChips.addView(binding.getRoot());
 
@@ -230,9 +228,10 @@ public class EditImageDialog {
     /**
      * callbacks for edit completion
      */
-    public interface onCompleteListener{
+    interface onCompleteListener{
         void onEditCompleted(Item item);
         void onError(String error);
 
     }
+
 }
