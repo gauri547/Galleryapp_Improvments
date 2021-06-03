@@ -33,7 +33,7 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
     private LayoutInflater inflater;
 
     private boolean isCustomLabel;
-    private Bitmap image;
+   int flag = 0;
     private AlertDialog dialog;
     private String imageUrl;
 
@@ -66,7 +66,6 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
         hideErrorsForET();
     }
 
-    //Utils
 
     /**
      * Hide Error of text field on text change
@@ -89,8 +88,6 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
             }
         });
     }
-
-    // Step 1: Input Dimensions
 
     /**
      * Takes Input of Height and Width and fetches image
@@ -119,7 +116,8 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }  //Square Img
+                }
+                //Square Image
                 else if(heightStr.isEmpty()){
                     int width = Integer.parseInt(widthStr);
                     try {
@@ -150,8 +148,6 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
         imm.hideSoftInputFromWindow(b.width.getWindowToken(), 0);
     }
 
-    //Step 2: Fetch Random Image
-
     /**
      * Fetch Square Image
      * @param x
@@ -171,10 +167,31 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
                 .fetchData(width, height, context, this);
     }
 
-    //Step: 3 Show Data
+    public void fetchDataForGallery(String url,Context context,onCompleteListener listener){
+        this.listener = listener;
+        this.context = context;
+        flag=1;
+        if (context instanceof MainActivity) {
+            inflater = ((MainActivity) context).getLayoutInflater();
+            b = DialogAddImageBinding.inflate(inflater);
+        } else {
+            dialog.dismiss();
+            listener.onError("Cast Exception");
+            return;
+        }
+        dialog = new MaterialAlertDialogBuilder(context)
+                .setView(b.getRoot())
+                .show();
+        b.inputDimensionRoot.setVisibility(View.GONE);
+        b.progressIndicatorRoot.setVisibility(View.VISIBLE);
+        new ItemHelper()
+                .fetchData(url,context,this);
+
+    }
+
+
 
     /**
-     * Show Data on Main Root to Add Image to Gallert
      * @param url
      * @param colors
      * @param labels
@@ -273,7 +290,6 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
     }
 
     /**
-     * S
      * @param url
      * @param colors
      * @param labels
@@ -294,7 +310,7 @@ public class AddImageDialog implements ItemHelper.OnCompleteListener {
     /**
      * callbacks for add image completion
      */
-    interface onCompleteListener{
+    public interface onCompleteListener{
         void onImageAdded(Item item);
         void onError(String error);
     }

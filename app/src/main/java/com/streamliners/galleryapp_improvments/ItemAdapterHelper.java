@@ -8,14 +8,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemAdapterHelper extends ItemTouchHelper.Callback {
 
-    ItemAdapter itemTouchHelperAdapter;
+    ItemAdapterInterface itemTouchHelperAdapter;
 
     /**
      * Parameterised Constructor for ItemAdapterHelper
      *
      * @param itemTouchHelperAdapter
      */
-    public ItemAdapterHelper(ItemAdapter itemTouchHelperAdapter) {
+    public ItemAdapterHelper(ItemAdapterInterface itemTouchHelperAdapter) {
         this.itemTouchHelperAdapter = itemTouchHelperAdapter;
     }
 

@@ -56,7 +56,7 @@ public class RedirectedURLHelper extends AsyncTask<String,Void,String> {
 
 
 
-    interface OnFetchedUrlListener{
+    public interface OnFetchedUrlListener{
         void onFetchedUrl(String url);
     }
 

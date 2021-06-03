@@ -32,8 +32,7 @@ public class ItemHelper {
     private Context context;
     private OnCompleteListener listener;
 
-    private String rectangularImageUrl = "https://picsum.photos/%d/%d"
-            , squareImageUrl = "https://picsum.photos/%d";
+    private String rectangularImageUrl = "https://picsum.photos/%d/%d", squareImageUrl = "https://picsum.photos/%d";
 
     private Bitmap bitmap;
     private Set<Integer> colors;
@@ -52,9 +51,7 @@ public class ItemHelper {
     public void fetchData(int x, int y, Context context, OnCompleteListener listener) throws IOException {
         this.context = context;
         this.listener = listener;
-        fetchUrl(
-                String.format(rectangularImageUrl, x, y)
-        );
+        fetchUrl(String.format(rectangularImageUrl, x, y));
     }
 
 
@@ -67,9 +64,13 @@ public class ItemHelper {
     public void fetchData(int x, Context context, OnCompleteListener listener) throws IOException {
         this.context = context;
         this.listener = listener;
-        fetchUrl(
-                String.format(squareImageUrl, x)
-        );
+        fetchUrl(String.format(squareImageUrl, x));
+    }
+    public void fetchData(String url,Context context,OnCompleteListener listener ){
+        this.context = context;
+        this.listener = listener;
+        redirectUrl = url;
+        fetchImage(url);
     }
 
 

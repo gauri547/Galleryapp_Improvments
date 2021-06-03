@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> implements ItemAdapterInterface{
 
     private Context context;
     private List<Item> items;
@@ -31,7 +31,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     public ItemTouchHelper mItemTouchHelper;
     public String imageUrl;
     public int index;
+
     public ItemCardBinding itemCardBinding;
+    public int mode;
+    public List<ItemHolder> holderList=new ArrayList<>();
 
     /**
      * Parameterised Constructor for ItemAdapter
@@ -69,7 +72,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
     /**
      * Search Option
-     * @param query
      */
     public void filter(String query){
         //Filter According to Search Query
@@ -94,7 +96,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
      * Sort Items Alphabetically
      */
     public void sortAlphabetically(){
-        //Sort List of Items according to alphabetical order of labels
         Collections.sort(items, new Comparator<Item>() {
             @Override
             public int compare(Item o1, Item o2) {
@@ -106,15 +107,22 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
     }
 
 
+
+
+    public void onItemDrag(int from, int to) {
+        Item fromItem = items.get(from);
+        items.remove(fromItem);
+        items.add(to, fromItem);
+        itemsToShow = items;
+        notifyItemMoved(from, to);
+    }
+
+    public void onItemSwipe(int position) {
+        return;
+    }
     public void setItemAdapterHelper(ItemTouchHelper itemTouchHelper){
 
         mItemTouchHelper = itemTouchHelper;
-    }
-
-    public void onItemDrag(int adapterPosition, int adapterPosition1) {
-    }
-
-    public void onItemSwipe(int adapterPosition) {
     }
 
     public class ItemHolder extends RecyclerView.ViewHolder implements View.OnTouchListener, GestureDetector.OnGestureListener, View.OnCreateContextMenuListener {
@@ -125,11 +133,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
             super(binding.getRoot());
             this.binding = binding;
             gestureDetector = new GestureDetector(binding.getRoot().getContext(), this);
-            //Set on touch listener for drag movement
-            binding.imageView.setOnTouchListener(this);
-            //Create Context Menu
-            binding.title.setOnCreateContextMenuListener(this);
+            listenerSetter();
         }
+
+        /**
+         * Change Listener when Mode is Changed
+         */
+        public void listenerSetter(){
+            if (mode == 0){
+                binding.imageView.setOnTouchListener(null);
+                binding.title.setOnCreateContextMenuListener(this);
+                binding.imageView.setOnCreateContextMenuListener(this);
+            }
+            else if (mode == 1){
+                binding.title.setOnCreateContextMenuListener(null);
+                binding.imageView.setOnCreateContextMenuListener(null);
+
+                binding.imageView.setOnTouchListener(this);
+
+            }
+        }
+
 
         @Override
         public boolean onDown(MotionEvent e) {
@@ -153,7 +177,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            mItemTouchHelper.startDrag(this);
+            if(mode==1)
+                mItemTouchHelper.startDrag(this);
         }
 
         @Override
@@ -175,7 +200,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemHolder> {
          */
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select The Action");
+            menu.setHeaderTitle("Choose Action");
             menu.add(this.getAdapterPosition(), R.id.editMenuItem, 0, "Edit Item");
             menu.add(this.getAdapterPosition(), R.id.shareImage, 0, "Share Image");
             imageUrl = items.get(this.getAdapterPosition()).imageUrl;
