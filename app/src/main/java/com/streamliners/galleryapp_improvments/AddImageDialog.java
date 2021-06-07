@@ -20,13 +20,14 @@ import android.app.Activity;
         import com.streamliners.galleryapp_improvments.databinding.ChipColorBinding;
         import com.streamliners.galleryapp_improvments.databinding.ChipLabelBinding;
         import com.streamliners.galleryapp_improvments.databinding.DialogAddImageBinding;
-        import com.streamliners.galleryapp_improvments.models.Item;
+import com.streamliners.galleryapp_improvments.helper.ItemHelper;
+import com.streamliners.galleryapp_improvments.models.Item;
 
         import java.io.IOException;
         import java.util.List;
         import java.util.Set;
 
-public class AddImageDialog implements ItemHelper.OnCompleteListener {
+public class AddImageDialog implements ItemHelper.OnCompleteListener{
     private Context context;
     private onCompleteListener listener;
     private DialogAddImageBinding b;

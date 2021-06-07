@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,8 +27,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.streamliners.galleryapp_improvments.adapter.ItemAdapter;
 import com.streamliners.galleryapp_improvments.databinding.ActivityMainBinding;
 import com.streamliners.galleryapp_improvments.databinding.ItemCardBinding;
+import com.streamliners.galleryapp_improvments.helper.ItemAdapterHelper;
 import com.streamliners.galleryapp_improvments.models.Item;
 
 import org.jetbrains.annotations.NotNull;
@@ -152,15 +153,17 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        imageUrl = adapter.imageUrl;    //Image Url of Parent of Context Menu
-        int index = adapter.index;      //Index of item for context menu
-        ItemCardBinding binding = adapter.itemCardBinding;      //Binding of parent of context menu
+        //Image Url of Parent of Context Menu
+        imageUrl = adapter.imageUrl;
+        //Index of item for context menu
+        int index = adapter.index;
+        ItemCardBinding binding = adapter.itemCardBinding;
         if (item.getItemId() == R.id.editMenuItem) {
             new EditImageDialog()
                     .show(this, imageUrl, new EditImageDialog.onCompleteListener() {
                         @Override
                         public void onEditCompleted(Item item) {
-//                            int index = b.list.indexOfChild(bindingToRemove.getRoot()) - 1;
+
                             items.set(index, item);
                             //Inflate Layout
                             adapter.notifyDataSetChanged();
@@ -184,13 +187,12 @@ public class MainActivity extends AppCompatActivity {
         Bitmap bitmap = getBitmapFromView(binding.getRoot());
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/png");
-//        String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "palette", "share palette");
-//        Uri bitmapUri = Uri.parse(bitmapPath);
+
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, "title");
         values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
-        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                values);
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,values);
+
 
 
         OutputStream outputStream;
