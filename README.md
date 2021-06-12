@@ -30,6 +30,10 @@ We can download apk from [here](https://github.com/gauri547/Galleryapp_Improvmen
 ![image](https://user-images.githubusercontent.com/81371138/119925521-4134a900-bf93-11eb-95fc-6a4a49c0cc36.png)
 
 
+## APK
+ [apk](https://github.com/gauri547/Galleryapp_Improvments/releases/download/v2/app-debug.apk)
+
+
 
 
 
